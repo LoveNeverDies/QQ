@@ -36,7 +36,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         /// 是否是主键
         /// </summary>
         public bool IsPrimaryKey { get; set; }
-        
+
         /// <summary>
         /// 是否是外键
         /// </summary>
@@ -97,6 +97,11 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         /// 是否是主键
         /// </summary>
         public bool IsPrimaryKey { get; set; }
+
+        /// <summary>
+        /// 是否是外键
+        /// </summary>
+        public bool IsForeignKey { get; set; }
 
         /// <summary>
         /// 可以为空
@@ -249,6 +254,9 @@ EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'QQ号', @le
                         break;
                     case "IsPrimaryKey":
                         res.IsPrimaryKey = arg.TypedValue.Value.ToBoolean();
+                        break;
+                    case "IsForeignKey":
+                        res.IsForeignKey = arg.TypedValue.Value.ToBoolean();
                         break;
                     case "Name":
                         res.Name = arg.TypedValue.Value.ToString();

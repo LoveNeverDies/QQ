@@ -3,7 +3,6 @@ using Nancy.ModelBinding;
 using Newbe.Mahua.HttpApiClient.Api;
 using Newbe.Mahua.HttpApiClient.Model;
 using Newbe.Mahua.Plugins.Parrot.Helper;
-using Newbe.Mahua.Plugins.Parrot.Helper;
 using Newbe.Mahua.Plugins.Parrot.Model;
 using System;
 using System.Collections.Generic;
@@ -172,7 +171,7 @@ namespace Newbe.Mahua.Plugins.Parrot
         {
             string message = string.Empty;
 
-            var user = QQHelper.Get<QQUSER>(p => p.QQUSER_QQID == qqid && p.QQUSER_QQQID == qqqid);
+            var user = EntityHelper.Get<QQUSER>(p => p.QQUSER_QQID == qqid && p.QQUSER_QQQID == qqqid);
             Random random = new Random();
             var num = random.Next(1, 100);
             if (user.ID == Guid.Empty)
@@ -234,7 +233,7 @@ namespace Newbe.Mahua.Plugins.Parrot
             }
             catch (Exception ex)
             {
-                Console.WriteLine("ÍøÕ¾³ö´í");
+                Console.WriteLine("ÍøÕ¾³ö´í£¬{0}", ex.Message);
             }
 
             return "ÍøÕ¾³ö´í";

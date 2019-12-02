@@ -33,7 +33,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
     }
     class JsonHelper : IJsonHelper
     {
-        readonly string JsonPath = "../../../../config.json";
+        readonly string JsonPath = "../../../config.json";
 
         JToken ReadJson(string nodeName)
         {

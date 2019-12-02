@@ -6,10 +6,44 @@ namespace Newbe.Mahua.Plugins.Parrot.HelperService
 {
     public interface ISqlServerTableHelper
     {
+        /// <summary>
+        /// 增删改
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="pms"></param>
+        /// <returns></returns>
         int ExecuteNonQuery(string sql, params SqlParameter[] pms);
+
+        /// <summary>
+        /// 获取第一行第一列
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="pms"></param>
+        /// <returns></returns>
         object ExecuteScalar(string sql, params SqlParameter[] pms);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="pms"></param>
+        /// <returns></returns>
         IDataReader ExecuteReader(string sql, params SqlParameter[] pms);
+
+        /// <summary>
+        /// 返回datatable格式的list数据
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="pms"></param>
+        /// <returns></returns>
         DataTable ExecuteDataTable(string sql, params SqlParameter[] pms);
+
+        /// <summary>
+        /// 返回dataset格式的list数据
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="pms"></param>
+        /// <returns></returns>
         DataSet ExecuteDataSet(string sql, params SqlParameter[] pms);
     }
     class SqlServerTableHelper : ISqlServerTableHelper
@@ -22,6 +56,7 @@ namespace Newbe.Mahua.Plugins.Parrot.HelperService
             jsonHelper = new JsonHelper();
         }
         string ConnectionString { get { return jsonHelper.ReadJsonByString("SqlServerConnectionString"); } }
+
         DataSet ISqlServerTableHelper.ExecuteDataSet(string sql, params SqlParameter[] pms)
         {
             DataSet dataSet = new DataSet();

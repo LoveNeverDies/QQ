@@ -7,6 +7,14 @@ namespace Newbe.Mahua.Plugins.Parrot
     {
         static void Main(string[] args)
         {
+            QQUSER qq = new QQUSER()
+            {
+                BREAK = "备注",
+                QQUSER_QQID = 1401210070,
+                QQUSER_QQQID = 111222333,
+                QQUSER_EXPERIENCE = 123
+            };
+            qq.Get();
             GenerateTableHelper create = new GenerateTableHelper();
             create.StructureSql<QQUSER>()
                 .StructureSql<QQXXZM>()
