@@ -15,6 +15,8 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         static ISqlServerTableHelper sqlServerTableHelper = new SqlServerTableHelper();
         static ILogHelper logHelper = new LogHelper();
         static IJsonHelper jsonHelper = new JsonHelper();
+
+        #region Lambda表达式转换为SQL WHERE 条件
         public class ToSqlFormat : Attribute
         {
             public string Format { get; set; }
@@ -30,7 +32,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        public static string GetSqlFromExpression<T>(Expression<Func<T, bool>> func)
+        static string GetSqlFromExpression<T>(Expression<Func<T, bool>> func)
         {
             if (func != null && func.Body is BinaryExpression be)
             {
@@ -57,8 +59,8 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             string tmpStr = ExpressionRouter(right);
             if (tmpStr == "null")
             {
-                if (sb.EndsWith(" =")) sb = sb.Substring(0, sb.Length - 2) + " is null";
-                else if (sb.EndsWith("<>")) sb = sb.Substring(0, sb.Length - 2) + " is not null";
+                if (sb.EndsWith(" = ")) sb = sb.Substring(0, sb.Length - 2) + " is null";
+                else if (sb.EndsWith(" <> ")) sb = sb.Substring(0, sb.Length - 2) + " is not null";
             }
             else sb += tmpStr;
             return sb += ")";
@@ -178,12 +180,31 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         {
             return true;
         }
+        #endregion
 
-        static IQueryable<T> Query<T>() where T : IKey<Guid>, new()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="Top1">只返回第一行</param>
+        /// <returns></returns>
+        static IQueryable<T> Query<T>(bool Top1 = false) where T : IKey<Guid>, new()
         {
             var type = typeof(T);
-            string sql = string.Format("SELECT * FROM {0};", type.Name);
-            return sqlServerTableHelper.ExecuteDataTable(sql).ToListModel<T>().AsQueryable();
+            return sqlServerTableHelper.ExecuteDataTable(string.Format("SELECT {0}* FROM {1} WHERE 1 = 1 ", Top1 ? "TOP 1 " : string.Empty, type.Name)).ToListModel<T>().AsQueryable();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expression"></param>
+        /// <param name="Top1">只返回第一行</param>
+        /// <returns></returns>
+        static IQueryable<T> Query<T>(Expression<Func<T, bool>> expression, bool Top1 = false) where T : IKey<Guid>, new()
+        {
+            var type = typeof(T);
+            return sqlServerTableHelper.ExecuteDataTable(string.Format("SELECT {0}* FROM {1} WHERE {2}", Top1 ? "TOP 1 " : string.Empty, type.Name, GetSqlFromExpression(expression))).ToListModel<T>().AsQueryable();
         }
 
         static bool JudgeValue(string PropertyTypeName, object val)
@@ -431,7 +452,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             T res = default(T);
             try
             {
-                res = Query<T>().FirstOrDefault(expression);
+                res = Query<T>(expression, true).FirstOrDefault();
             }
             catch (Exception e)
             {
@@ -445,8 +466,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             T res = default(T);
             try
             {
-                var sql = GetSqlFromExpression(expression);
-                res = Query<T>().FirstOrDefault(expression);
+                res = Query<T>(expression, true).FirstOrDefault();
             }
             catch (Exception e)
             {
@@ -460,7 +480,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             IList<T> res = default(IList<T>);
             try
             {
-                res = Query<T>().Where(expression).ToList();
+                res = Query<T>(expression).ToList();
             }
             catch (Exception e)
             {
@@ -474,7 +494,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             IList<T> res = default(IList<T>);
             try
             {
-                res = Query<T>().Where(expression).ToList();
+                res = Query<T>(expression).ToList();
             }
             catch (Exception e)
             {
