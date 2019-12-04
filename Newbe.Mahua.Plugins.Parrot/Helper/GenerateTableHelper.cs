@@ -73,7 +73,11 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         /// <summary>
         /// INT类型
         /// </summary>
-        INT
+        INT,
+        /// <summary>
+        /// BIT类型
+        /// </summary>
+        BIT
     }
 
     class TableColumnModel
@@ -140,6 +144,9 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
                 case ColumnType.INT:
                     res = "INT";
                     break;
+                case ColumnType.BIT:
+                    res = "BIT";
+                    break;
                 default:
                     res = "TEXT";
                     break;
@@ -147,6 +154,11 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             return res;
         }
 
+        /// <summary>
+        /// 如果用户没有给字段添加TYPE属性，则反射字段的类型处理
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         string GetEntityType(string type)
         {
             string res = string.Empty;
@@ -163,6 +175,9 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
                     break;
                 case "Guid":
                     res = "UNIQUEIDENTIFIER";
+                    break;
+                case "Boolean":
+                    res = "BIT";
                     break;
                 default:
                     res = "TEXT";

@@ -12,13 +12,13 @@ namespace Newbe.Mahua.Plugins.Parrot.Model
         /// <summary>
         /// 宗门名称
         /// </summary>
-        [Column(CanBeNull = false, Describe = "宗门名称")]
+        [Column(CanBeNull = false, Type = ColumnType.NVARCHAR100, Describe = "宗门名称")]
         public string QQXXZM_NAME { get; set; }
 
         /// <summary>
         /// 加入宗门需要的境界
         /// </summary>
-        [Column(CanBeNull = false, Describe = "加入宗门需要的境界")]
+        [Column(CanBeNull = false, Type = ColumnType.NVARCHAR100, Describe = "加入宗门需要的境界")]
         public string QQXXZM_LEVEL { get; set; }
 
         /// <summary>
@@ -26,5 +26,10 @@ namespace Newbe.Mahua.Plugins.Parrot.Model
         /// </summary>
         [Column(CanBeNull = false, Describe = "宗门的好坏true是好false是坏")]
         public bool QQXXZM_HH { get; set; }
+        /// <summary>
+        /// 宗门介绍
+        /// </summary>
+        [Column(CanBeNull = false, Describe = "宗门介绍")]
+        public string QQXXZM_JS { get; set; }
     }
 }

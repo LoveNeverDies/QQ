@@ -11,7 +11,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Model
         /// <summary>
         /// 境界阶段 例：大乘期一阶
         /// </summary>
-        [Column(CanBeNull = false, Describe = "境界阶段")]
+        [Column(CanBeNull = false, Type = ColumnType.NVARCHAR100, Describe = "境界阶段")]
         public string QQXXLEVEL_NAMEJD { get; set; }
 
         /// <summary>

@@ -7,7 +7,7 @@ namespace Newbe.Mahua.Plugins.Parrot
     {
         static void Main(string[] args)
         {
-            EntityHelper.Get<QQXX>(p => p.QQUSER_GUID.QQUSER_QQID == 123);
+            new InitializationData().InitializationQQXXZM();
             //new GenerateTableHelper()
             //    .StructureSql<QQUSER>()
             //    .StructureSql<QQXXZM>()
