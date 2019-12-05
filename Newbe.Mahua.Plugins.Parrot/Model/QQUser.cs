@@ -1,7 +1,4 @@
-﻿using System.Data;
-using System.Data.SqlClient;
-using Newbe.Mahua.Plugins.Parrot.Helper;
-using Newbe.Mahua.Plugins.Parrot.HelperService;
+﻿using Newbe.Mahua.Plugins.Parrot.Helper;
 using Newbe.Mahua.Plugins.Parrot.Model.Base;
 
 namespace Newbe.Mahua.Plugins.Parrot.Model
@@ -12,6 +9,13 @@ namespace Newbe.Mahua.Plugins.Parrot.Model
     [Table(Name = nameof(QQUSER))]
     public class QQUSER : BaseEntity
     {
+        public enum STATE
+        {
+            /// <summary>
+            /// 没有状态
+            /// </summary>
+            NOSTATE = 0
+        }
         /// <summary>
         /// QQ号
         /// </summary>
@@ -29,5 +33,11 @@ namespace Newbe.Mahua.Plugins.Parrot.Model
         /// </summary>
         [Column(CanBeNull = false, Describe = "经验")]
         public long QQUSER_EXPERIENCE { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Column(CanBeNull = false, Describe = "用户状态", Type = ColumnType.INT)]
+        public STATE QQUSER_STATE { get; set; }
     }
 }

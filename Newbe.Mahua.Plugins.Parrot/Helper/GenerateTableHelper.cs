@@ -38,7 +38,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         public bool IsPrimaryKey { get; set; }
 
         /// <summary>
-        /// 是否是外键
+        /// 是否是外键 虽然还没有实现这个功能 但是字段先保留
         /// </summary>
         public bool IsForeignKey { get; set; }
 
@@ -168,6 +168,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
                     res = "DATETIME";
                     break;
                 case "Int32":
+                case "Enum":
                     res = "INT";
                     break;
                 case "Int64":

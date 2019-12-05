@@ -1,5 +1,6 @@
 ﻿using Newbe.Mahua.Plugins.Parrot.Helper;
 using Newbe.Mahua.Plugins.Parrot.Model.Base;
+using System;
 
 namespace Newbe.Mahua.Plugins.Parrot.Model
 {
@@ -13,19 +14,19 @@ namespace Newbe.Mahua.Plugins.Parrot.Model
         /// 关联QQUSER表
         /// </summary>
         [Column(Type = ColumnType.UNIQUEIDENTIFIER, Describe = "关联QQUSER表", IsForeignKey = true)]
-        public QQUSER QQUSER_GUID { get; set; }
+        public Guid QQUSER_GUID { get; set; }
 
         /// <summary>
         /// 关联QQXXLEVEL表
         /// </summary>
         [Column(Type = ColumnType.UNIQUEIDENTIFIER, Describe = "关联QQXXLEVEL表", IsForeignKey = true)]
-        public QQXXLEVEL QQXXLEVEL_GUID { get; set; }
+        public Guid QQXXLEVEL_GUID { get; set; }
 
         /// <summary>
         /// 关联QQXXZM表
         /// </summary>
         [Column(Type = ColumnType.UNIQUEIDENTIFIER, Describe = "关联QQXXZM表", IsForeignKey = true)]
-        public QQXXZM QQXXZM_GUID { get; set; }
+        public Guid QQXXZM_GUID { get; set; }
 
         /// <summary>
         /// 真气（攻击）

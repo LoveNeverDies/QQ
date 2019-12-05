@@ -8,6 +8,21 @@ namespace Newbe.Mahua.Plugins.Parrot.Model
     /// </summary>
     public class QQXXLEVEL : BaseEntity
     {
+        public enum REGION
+        {
+            /// <summary>
+            /// 地球
+            /// </summary>
+            DQ = 0,
+            /// <summary>
+            /// 天界
+            /// </summary>
+            TJ = 2,
+            /// <summary>
+            /// 九天之上
+            /// </summary>
+            JTZS = 3
+        }
         /// <summary>
         /// 境界阶段 例：大乘期一阶
         /// </summary>
@@ -19,5 +34,8 @@ namespace Newbe.Mahua.Plugins.Parrot.Model
         /// </summary>
         [Column(CanBeNull = false, Describe = "境界阶段")]
         public int QQXXLEVEL_NUMBERJD { get; set; }
+
+        [Column(CanBeNull = false, Describe = "境界划分地区", Type = ColumnType.INT)]
+        public REGION QQXXLEVEL_REGION { get; set; }
     }
 }

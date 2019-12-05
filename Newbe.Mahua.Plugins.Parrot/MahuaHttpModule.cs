@@ -8,57 +8,72 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 
 namespace Newbe.Mahua.Plugins.Parrot
 {
     public class MahuaHttpModule : NancyModule
     {
-        IAccessTableHelper accessTableHelper = null;
+        static DateTime NowTime = DateTime.MinValue;
+        CqpApi cqpApi = new CqpApi("http://127.0.0.1:36524");
         public MahuaHttpModule() : base("/api")
         {
-            accessTableHelper = new AccessTableHelper();
+            //cd 三秒
+            if ((DateTime.Now - NowTime).TotalMilliseconds <= 3)
+                return;
             Post["/ReceiveMahuaOutput"] = parameters =>
             {
-                DateTime time = DateTime.Now;
-                var body = this.Bind<BodyModel>();
+                BodyModel body = this.Bind<BodyModel>();
                 string message = string.Empty;
-                var cqpApi = new CqpApi("http://127.0.0.1:36524");
-                //个人消息
-                if (body != null && body.TypeCode == "ProcessPrivateMessage" && body.Platform == 0)
+                Func<BodyModel, string> func = StartMahuaHttpModule;
+                func.BeginInvoke(body, new AsyncCallback(p =>
                 {
-                    switch (body.Msg)
-                    {
-                        case "你好":
-                            body.Msg = "你也好呀";
-                            break;
-                        default:
-                            body.Msg = string.Empty;
-                            break;
-                    }
-                    if (!string.IsNullOrWhiteSpace(body.Msg))
-                        cqpApi.Apiv1CqpCQSendPrivateMsg(new CqpCQSendPrivateMsgHttpInput
-                        {
-                            Msg = body.Msg,
-                            Qqid = body.FromQQ
-                        }
-                        );
-                    message = "ok";
-                }
-                //群消息
-                else if (body != null && body.TypeCode == "ProcessGroupMessage" && body.Platform == 0)
-                {
-                    body.Message = StartProcessing(body.FromQQ, body.FromGroup, body.Message.Trim());
-                    if (!string.IsNullOrWhiteSpace(body.Message))
-                        cqpApi.Apiv1CqpCQSendGroupMsg(new CqpCQSendGroupMsgHttpInput
-                        {
-                            Msg = body.Message,
-                            群号 = body.FromGroup
-                        });
-                    message = "ok";
-                }
-                return message == string.Empty ? "nothing" : message;
+                    AsyncResult res = (AsyncResult)p;
+                    var resFunc = (Func<BodyModel, string>)res.AsyncDelegate;
+                    message = resFunc.EndInvoke(p);
+                }), null);
+                return message;
             };
+        }
+
+        public string StartMahuaHttpModule(BodyModel body)
+        {
+            string message = string.Empty;
+            //个人消息
+            if (body != null && body.TypeCode == "ProcessPrivateMessage" && body.Platform == 0)
+            {
+                switch (body.Msg)
+                {
+                    case "你好":
+                        body.Msg = "你也好呀";
+                        break;
+                    default:
+                        body.Msg = string.Empty;
+                        break;
+                }
+                if (!string.IsNullOrWhiteSpace(body.Msg))
+                    cqpApi.Apiv1CqpCQSendPrivateMsg(new CqpCQSendPrivateMsgHttpInput
+                    {
+                        Msg = body.Msg,
+                        Qqid = body.FromQQ
+                    }
+                    );
+                message = "ok";
+            }
+            //群消息
+            else if (body != null && body.TypeCode == "ProcessGroupMessage" && body.Platform == 0)
+            {
+                body.Message = StartProcessing(body.FromQQ, body.FromGroup, body.Message.Trim());
+                if (!string.IsNullOrWhiteSpace(body.Message))
+                    cqpApi.Apiv1CqpCQSendGroupMsg(new CqpCQSendGroupMsgHttpInput
+                    {
+                        Msg = body.Message,
+                        群号 = body.FromGroup
+                    });
+                message = "ok";
+            }
+            return message == string.Empty ? "nothing" : message;
         }
 
         /// <summary>

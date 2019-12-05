@@ -279,6 +279,11 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
                     continue;
                 if (JudgeValue(item.PropertyType.FullName, val))
                     continue;
+                if (item.PropertyType.BaseType.Name == "Enum")
+                {
+                    //d表示转换为数字
+                    val = Enum.Format(item.PropertyType, val, "d");
+                }
                 strKey.AppendFormat("[{0}]{1}", key, i == propertys.Length - 1 ? string.Empty : ", ");
                 strVal.AppendFormat("'{0}'{1}", val, i == propertys.Length - 1 ? string.Empty : ", ");
             }
