@@ -367,7 +367,13 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
                                     p.SetValue(t, value ?? value.ToDateTime(), null);
                                     break;
                                 default:
-                                    throw new Exception("类型不匹配:" + p.PropertyType.FullName);
+                                    if (p.PropertyType.BaseType.Name == "Enum")
+                                    {
+                                        p.SetValue(t, value ?? value, null);
+                                        break;
+                                    }
+                                    else
+                                        throw new Exception("类型不匹配:" + p.PropertyType.FullName);
                             }
                         }
                     }
@@ -418,6 +424,10 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         public static DateTime ToDateTime(this Object value)
         {
             return DateTime.Parse(value.ToString());
+        }
+        public static string ToEnum(this Object value, Type enumType)
+        {
+            return Enum.Format(enumType, value, "d");
         }
 
 

@@ -7,11 +7,7 @@ namespace Newbe.Mahua.Plugins.Parrot
     {
         static void Main(string[] args)
         {
-            new InitializationData().InitializationQQXXZM();
-            //new GenerateTableHelper()
-            //    .StructureSql<QQUSER>()
-            //    .StructureSql<QQXXZM>()
-            //    .SubmitSqlServer();
+            //new InitializationData().InitializationQQXXZM();
             //using (var host = new NancyHost(new Uri("http://localhost:65321")))
             //{
             //    host.Start();

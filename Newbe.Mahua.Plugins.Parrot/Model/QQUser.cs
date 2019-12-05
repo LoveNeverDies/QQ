@@ -14,7 +14,8 @@ namespace Newbe.Mahua.Plugins.Parrot.Model
             /// <summary>
             /// 没有状态
             /// </summary>
-            NOSTATE = 0
+            NOSTATE = 0,
+            STATE = 1
         }
         /// <summary>
         /// QQ号

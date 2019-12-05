@@ -191,7 +191,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         static IQueryable<T> Query<T>(bool Top1 = false) where T : IKey<Guid>, new()
         {
             var type = typeof(T);
-            return sqlServerTableHelper.ExecuteDataTable(string.Format("SELECT {0}* FROM {1} WHERE 1 = 1 ", Top1 ? "TOP 1 " : string.Empty, type.Name)).ToListModel<T>().AsQueryable();
+            return sqlServerTableHelper.ExecuteDataTable(string.Format("SELECT {0}* FROM {1} WHERE 1 = 1 ", Top1 ? "TOP 1 " : string.Empty, type.Name)).ToListModel<T>(Top1).AsQueryable();
         }
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         static IQueryable<T> Query<T>(Expression<Func<T, bool>> expression, bool Top1 = false) where T : IKey<Guid>, new()
         {
             var type = typeof(T);
-            return sqlServerTableHelper.ExecuteDataTable(string.Format("SELECT {0}* FROM {1} WHERE {2}", Top1 ? "TOP 1 " : string.Empty, type.Name, GetSqlFromExpression(expression))).ToListModel<T>().AsQueryable();
+            return sqlServerTableHelper.ExecuteDataTable(string.Format("SELECT {0}* FROM {1} WHERE {2}", Top1 ? "TOP 1 " : string.Empty, type.Name, GetSqlFromExpression(expression))).ToListModel<T>(Top1).AsQueryable();
         }
 
         static bool JudgeValue(string PropertyTypeName, object val)
@@ -380,14 +380,13 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         /// <typeparam name="T"></typeparam>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static void Delete<T>(this T entity) where T : IKey<Guid>, new()
+        public static int Delete(this string sql)
         {
-            var t = typeof(T);
+            int resCount = 0;
             try
             {
-                //t.GetProperties().GetValue()
-                string sql = string.Format("DELETE FROM [{0}] WHERE [ID] = {1};", t.Name, t.GetProperty("ID").GetValue(entity));
-                if (sqlServerTableHelper.ExecuteNonQuery(sql.ToString()) == 0)
+                resCount = sqlServerTableHelper.ExecuteNonQuery(sql.ToString());
+                if (resCount == 0)
                 {
                     logHelper.Waring("Delete错误，SQL语句：{0}", sql);
                 }
@@ -396,13 +395,34 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             {
                 logHelper.Error(e.Message);
             }
+            return resCount;
         }
 
-        public static void Delete<T>(Expression<Func<T, bool>> expression) where T : IKey<Guid>, new()
+        public static int Delete<T>(this T entity) where T : IKey<Guid>, new()
         {
-            //DataContext dbContext = new DataContext(new OleDbConnection(jsonHelper.ReadJsonByString("ConnectionString")));
-            //dbContext.Log = Console.Out;
-            //Table<QQUSER> qquserTable = dbContext.GetTable<QQUSER>();
+            int resCount = 0;
+            var t = typeof(T);
+            try
+            {
+                //t.GetProperties().GetValue()
+                string sql = string.Format("DELETE FROM [{0}] WHERE [ID] = {1};", t.Name, t.GetProperty("ID").GetValue(entity));
+                resCount = sqlServerTableHelper.ExecuteNonQuery(sql.ToString());
+                if (resCount == 0)
+                {
+                    logHelper.Waring("Delete错误，SQL语句：{0}", sql);
+                }
+            }
+            catch (Exception e)
+            {
+                logHelper.Error(e.Message);
+            }
+            return resCount;
+        }
+
+        public static int Delete<T>(Expression<Func<T, bool>> expression) where T : IKey<Guid>, new()
+        {
+            int resCount = 0;
+            int tempCount = 0;
             IList<T> res = default(IList<T>);
             var t = typeof(T);
             try
@@ -412,7 +432,9 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
                 foreach (var item in res)
                 {
                     strb.AppendFormat("DELETE FROM [{0}] WHERE [ID] = {1};", t.Name, t.GetProperty("ID").GetValue(item));
-                    if (sqlServerTableHelper.ExecuteNonQuery(strb.ToString()) == 0)
+                    tempCount = sqlServerTableHelper.ExecuteNonQuery(strb.ToString());
+                    resCount += tempCount;
+                    if (tempCount == 0)
                     {
                         logHelper.Waring("Delete错误，SQL语句：{0}", strb.ToString());
                     }
@@ -423,13 +445,13 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             {
                 logHelper.Error(e.Message);
             }
+            return resCount;
         }
 
-        public static void Delete<T>(this T entity, Expression<Func<T, bool>> expression) where T : IKey<Guid>, new()
+        public static int Delete<T>(this T entity, Expression<Func<T, bool>> expression) where T : IKey<Guid>, new()
         {
-            //DataContext dbContext = new DataContext(new OleDbConnection(jsonHelper.ReadJsonByString("ConnectionString")));
-            //dbContext.Log = Console.Out;
-            //Table<QQUSER> qquserTable = dbContext.GetTable<QQUSER>();
+            int resCount = 0;
+            int tempCount = 0;
             IList<T> res = default(IList<T>);
             var t = typeof(T);
             try
@@ -439,7 +461,9 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
                 foreach (var item in res)
                 {
                     strb.AppendFormat("DELETE FROM [{0}] WHERE [ID] = {1};", t.Name, t.GetProperty("ID").GetValue(item));
-                    if (sqlServerTableHelper.ExecuteNonQuery(strb.ToString()) == 0)
+                    tempCount = sqlServerTableHelper.ExecuteNonQuery(strb.ToString());
+                    resCount += tempCount;
+                    if (tempCount == 0)
                     {
                         logHelper.Waring("Delete错误，SQL语句：{0}", strb.ToString());
                     }
@@ -450,6 +474,21 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             {
                 logHelper.Error(e.Message);
             }
+            return resCount;
+        }
+
+        public static T Get<T>(this string sql) where T : IKey<Guid>, new()
+        {
+            T res = default(T);
+            try
+            {
+                res = sqlServerTableHelper.ExecuteDataTable(sql).ToListModel<T>(true).FirstOrDefault();
+            }
+            catch (Exception e)
+            {
+                logHelper.Error(e.Message);
+            }
+            return res;
         }
 
         public static T Get<T>(Expression<Func<T, bool>> expression) where T : IKey<Guid>, new()
@@ -472,6 +511,20 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             try
             {
                 res = Query<T>(expression, true).FirstOrDefault();
+            }
+            catch (Exception e)
+            {
+                logHelper.Error(e.Message);
+            }
+            return res;
+        }
+
+        public static IList<T> GetAll<T>(this string sql) where T : IKey<Guid>, new()
+        {
+            IList<T> res = default(IList<T>);
+            try
+            {
+                res = sqlServerTableHelper.ExecuteDataTable(sql).ToListModel<T>();
             }
             catch (Exception e)
             {

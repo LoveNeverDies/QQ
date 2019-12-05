@@ -111,6 +111,7 @@ namespace Newbe.Mahua.Plugins.Parrot
 
         public string QQXX(long qqid, long qqqid)
         {
+            new QQXXProgram().QQXXLogin();
             return string.Empty;
         }
 
