@@ -2,6 +2,7 @@
 using Newbe.Mahua.Plugins.Parrot.Model.Base;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -380,24 +381,6 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         /// <typeparam name="T"></typeparam>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static int Delete(this string sql)
-        {
-            int resCount = 0;
-            try
-            {
-                resCount = sqlServerTableHelper.ExecuteNonQuery(sql.ToString());
-                if (resCount == 0)
-                {
-                    logHelper.Waring("Delete错误，SQL语句：{0}", sql);
-                }
-            }
-            catch (Exception e)
-            {
-                logHelper.Error(e.Message);
-            }
-            return resCount;
-        }
-
         public static int Delete<T>(this T entity) where T : IKey<Guid>, new()
         {
             int resCount = 0;
@@ -451,44 +434,15 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         public static int Delete<T>(this T entity, Expression<Func<T, bool>> expression) where T : IKey<Guid>, new()
         {
             int resCount = 0;
-            int tempCount = 0;
-            IList<T> res = default(IList<T>);
-            var t = typeof(T);
             try
             {
-                res = Query<T>().Where(expression).ToList();
-                StringBuilder strb = new StringBuilder();
-                foreach (var item in res)
-                {
-                    strb.AppendFormat("DELETE FROM [{0}] WHERE [ID] = {1};", t.Name, t.GetProperty("ID").GetValue(item));
-                    tempCount = sqlServerTableHelper.ExecuteNonQuery(strb.ToString());
-                    resCount += tempCount;
-                    if (tempCount == 0)
-                    {
-                        logHelper.Waring("Delete错误，SQL语句：{0}", strb.ToString());
-                    }
-                    strb.Clear();
-                }
+                resCount = Delete(expression);
             }
             catch (Exception e)
             {
                 logHelper.Error(e.Message);
             }
             return resCount;
-        }
-
-        public static T Get<T>(this string sql) where T : IKey<Guid>, new()
-        {
-            T res = default(T);
-            try
-            {
-                res = sqlServerTableHelper.ExecuteDataTable(sql).ToListModel<T>(true).FirstOrDefault();
-            }
-            catch (Exception e)
-            {
-                logHelper.Error(e.Message);
-            }
-            return res;
         }
 
         public static T Get<T>(Expression<Func<T, bool>> expression) where T : IKey<Guid>, new()
@@ -519,20 +473,6 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             return res;
         }
 
-        public static IList<T> GetAll<T>(this string sql) where T : IKey<Guid>, new()
-        {
-            IList<T> res = default(IList<T>);
-            try
-            {
-                res = sqlServerTableHelper.ExecuteDataTable(sql).ToListModel<T>();
-            }
-            catch (Exception e)
-            {
-                logHelper.Error(e.Message);
-            }
-            return res;
-        }
-
         public static IList<T> GetAll<T>(Expression<Func<T, bool>> expression) where T : IKey<Guid>, new()
         {
             IList<T> res = default(IList<T>);
@@ -552,7 +492,8 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             IList<T> res = default(IList<T>);
             try
             {
-                res = Query<T>(expression).ToList();
+                res = GetAll(expression);
+                //res = Query<T>(expression).ToList();
             }
             catch (Exception e)
             {
@@ -561,5 +502,36 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             return res;
         }
 
+        public static int ExecuteSql(this string sql, params SqlParameter[] parameters)
+        {
+            int resCount = 0;
+            try
+            {
+                resCount = sqlServerTableHelper.ExecuteNonQuery(sql, parameters);
+                if (resCount == 0)
+                {
+                    logHelper.Waring("ExecuteSql方法返回影响行数为0，SQL语句为：{0}", sql);
+                }
+            }
+            catch (Exception e)
+            {
+                logHelper.Error(e.Message);
+            }
+            return resCount;
+        }
+
+        public static IList<T> ExecuteSql<T>(this string sql, params SqlParameter[] parameters) where T : IKey<Guid>, new()
+        {
+            IList<T> res = default(IList<T>);
+            try
+            {
+                res = sqlServerTableHelper.ExecuteDataTable(sql, parameters).ToListModel<T>();
+            }
+            catch (Exception e)
+            {
+                logHelper.Error(e.Message);
+            }
+            return res;
+        }
     }
 }
