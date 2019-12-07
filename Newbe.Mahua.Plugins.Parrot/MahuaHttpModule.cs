@@ -20,7 +20,7 @@ namespace Newbe.Mahua.Plugins.Parrot
         public MahuaHttpModule() : base("/api")
         {
             //cd ÈýÃë
-            if ((DateTime.Now - NowTime).TotalMilliseconds <= 3)
+            if ((DateTime.Now - NowTime).TotalSeconds <= 3)
                 return;
             Post["/ReceiveMahuaOutput"] = parameters =>
             {

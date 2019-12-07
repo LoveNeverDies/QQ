@@ -10,7 +10,7 @@ namespace Newbe.Mahua.Plugins.Parrot
 
         }
 
-        public QQUSER.STATE QQXXUserState(long qqid, long qqqid)
+        public QQUSER.STATE GetQQXXUserState(long qqid, long qqqid)
         {
             QQUSER.STATE state = QQUSER.STATE.NOSTATE;
             var res = EntityHelper.Get<QQUSER>(p => p.QQUSER_QQID == qqid && p.QQUSER_QQQID == qqqid);
@@ -18,7 +18,7 @@ namespace Newbe.Mahua.Plugins.Parrot
             {
                 state = res.QQUSER_STATE;
             }
-            return QQUSER.STATE.NOSTATE;
+            return state;
         }
 
         public bool QQXXLogin()

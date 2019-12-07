@@ -9,7 +9,6 @@ namespace Newbe.Mahua.Plugins.Parrot
         GenerateTableHelper generate = null;
         public InitializationData()
         {
-            int i = 0;
             generate = new GenerateTableHelper();
         }
         public void InitializationQQXXLEVEL()
@@ -21,6 +20,7 @@ namespace Newbe.Mahua.Plugins.Parrot
             IList<QQXXLEVEL> list = new List<QQXXLEVEL>();
             qq.QQXXLEVEL_NAMEJD = "筑基";
             qq.QQXXLEVEL_NUMBERJD = ++i;
+            qq.QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ;
             list.Add(qq);
             qq.QQXXLEVEL_NAMEJD = "开光";
             qq.QQXXLEVEL_NUMBERJD = ++i;
@@ -100,9 +100,6 @@ namespace Newbe.Mahua.Plugins.Parrot
             qq.QQXXLEVEL_NAMEJD = "圣人";
             qq.QQXXLEVEL_NUMBERJD = ++i;
             list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "不朽";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
             qq.QQXXLEVEL_NAMEJD = "灵尊";
             qq.QQXXLEVEL_NUMBERJD = ++i;
             list.Add(qq);
@@ -110,6 +107,9 @@ namespace Newbe.Mahua.Plugins.Parrot
             qq.QQXXLEVEL_NUMBERJD = ++i;
             list.Add(qq);
             qq.QQXXLEVEL_NAMEJD = "永恒";
+            qq.QQXXLEVEL_NUMBERJD = ++i;
+            list.Add(qq);
+            qq.QQXXLEVEL_NAMEJD = "不朽";
             qq.QQXXLEVEL_NUMBERJD = ++i;
             list.Add(qq);
             foreach (var item in list)
