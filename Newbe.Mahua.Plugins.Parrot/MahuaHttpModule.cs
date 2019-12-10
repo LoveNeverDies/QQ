@@ -24,8 +24,10 @@ namespace Newbe.Mahua.Plugins.Parrot
                 return;
             Post["/ReceiveMahuaOutput"] = parameters =>
             {
-                BodyModel body = this.Bind<BodyModel>();
                 string message = string.Empty;
+                BodyModel body = this.Bind<BodyModel>();
+                if (body.FromGroup != 767680958)
+                    return message;
                 Func<BodyModel, string> func = StartMahuaHttpModule;
                 func.BeginInvoke(body, new AsyncCallback(p =>
                 {
@@ -100,7 +102,7 @@ namespace Newbe.Mahua.Plugins.Parrot
             }
             else if (message == "修仙")
             {
-                message = QQXX(qqid, qqqid);
+                message = QQXX(qqid, qqqid, message);
             }
             else
             {
@@ -109,9 +111,15 @@ namespace Newbe.Mahua.Plugins.Parrot
             return message;
         }
 
-        public string QQXX(long qqid, long qqqid)
+        public string QQXX(long qqid, long qqqid, string msg)
         {
-            new QQXXProgram().QQXXLogin();
+            var qqxxhelper = new QQXXProgram(qqid, qqqid, msg);
+            //如果登录成功
+            if (qqxxhelper.QQXXLogin())
+            {
+
+            }
+
             return string.Empty;
         }
 

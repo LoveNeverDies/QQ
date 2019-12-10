@@ -6,6 +6,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Model
     /// <summary>
     /// QQ修仙境界
     /// </summary>
+    [Table(Name = nameof(QQXXLEVEL))]
     public class QQXXLEVEL : BaseEntity
     {
         public enum REGION

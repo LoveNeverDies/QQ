@@ -9,6 +9,11 @@ namespace Newbe.Mahua.Plugins.Parrot.Model
     [Table(Name = nameof(QQUSER))]
     public class QQUSER : BaseEntity
     {
+        public enum CurrentAddress
+        {
+            DQ = 0
+
+        }
         public enum STATE
         {
             /// <summary>

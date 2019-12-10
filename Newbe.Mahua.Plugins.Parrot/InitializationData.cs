@@ -13,105 +13,187 @@ namespace Newbe.Mahua.Plugins.Parrot
         }
         public void InitializationQQXXLEVEL()
         {
-            //generate.StructureSql<QQXXLEVEL>().SubmitSqlServer();
+            generate.StructureSql<QQXXLEVEL>().SubmitSqlServer();
             #region 添加境界
             int i = 0;
-            QQXXLEVEL qq = new QQXXLEVEL();
             IList<QQXXLEVEL> list = new List<QQXXLEVEL>();
-            qq.QQXXLEVEL_NAMEJD = "筑基";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            qq.QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "开光";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "融合";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "心动";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "金丹";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "元婴";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "出窍";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "分神";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "合体";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "洞虚";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "大乘";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "渡劫飞升";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "筑基",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "开光",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "融合",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "心动",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "金丹",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "元婴",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "出窍",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "分神",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "合体",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "洞虚",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "大乘",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "渡劫飞升",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
 
 
 
-            qq.QQXXLEVEL_NAMEJD = "游仙";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "真仙";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "金仙";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "玄仙";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "太乙玉仙";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "大罗金仙";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "仙尊";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "仙帝";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
+
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "游仙",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "真仙",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "金仙",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "玄仙",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "太乙玉仙",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "大罗金仙",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "仙尊",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "仙帝",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "破碎虚空",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
 
 
 
-            qq.QQXXLEVEL_NAMEJD = "破碎虚空";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "空玄";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "万劫";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "混元";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "圣人";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "灵尊";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "天道";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "永恒";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
-            qq.QQXXLEVEL_NAMEJD = "不朽";
-            qq.QQXXLEVEL_NUMBERJD = ++i;
-            list.Add(qq);
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "空玄",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "混元",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "圣人",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "灵尊",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "天道",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "永恒",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            list.Add(new QQXXLEVEL
+            {
+                QQXXLEVEL_NAMEJD = "不朽",
+                QQXXLEVEL_NUMBERJD = ++i,
+                QQXXLEVEL_REGION = QQXXLEVEL.REGION.TJ
+            });
+            
+            
             foreach (var item in list)
             {
                 item.Insert();

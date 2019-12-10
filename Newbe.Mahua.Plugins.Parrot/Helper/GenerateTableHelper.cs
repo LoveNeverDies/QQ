@@ -228,7 +228,15 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
 GO
 EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'QQ号', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'QQUSER', @level2type = N'COLUMN', @level2name = N'QQUSER_QQID';
              */
-            var tableName = typeof(T).GetCustomAttributesData()[0].NamedArguments[0].TypedValue.Value;
+            object tableName = new object();
+            try
+            {
+                tableName = typeof(T).GetCustomAttributesData()[0].NamedArguments[0].TypedValue.Value;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("当前类没有添加Table属性");
+            }
             strbuilderCreate.AppendLine("CREATE TABLE [dbo].[{0}] (", tableName);
             for (int i = 0; i < res.Count; i++)
             {
