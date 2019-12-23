@@ -11,10 +11,11 @@ namespace Newbe.Mahua.Plugins.Parrot.Model
     {
         public enum CurrentAddress
         {
-            DQ = 0
-
+            DQ = 0,
+            TJ = 1,
+            JTZS = 2
         }
-        public enum STATE
+        public enum State
         {
             /// <summary>
             /// 没有状态
@@ -41,9 +42,15 @@ namespace Newbe.Mahua.Plugins.Parrot.Model
         public long QQUSER_EXPERIENCE { get; set; }
 
         /// <summary>
-        /// 
+        /// 用户状态
         /// </summary>
         [Column(CanBeNull = false, Describe = "用户状态", Type = ColumnType.INT)]
-        public STATE QQUSER_STATE { get; set; }
+        public State QQUSER_STATE { get; set; }
+
+        /// <summary>
+        /// 角色所在位置
+        /// </summary>
+        [Column(CanBeNull = false, Describe = "角色所在位置", Type = ColumnType.INT)]
+        public CurrentAddress QQUSER_CURRENTADDRESS { get; set; }
     }
 }

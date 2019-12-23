@@ -230,7 +230,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
                         continueFlag = true;
                     break;
                 case "System.DateTime":
-                    if (val.ToDateTime() == @"0001/1/1 0:00:00".ToDateTime())
+                    if (val.ToDateTime() == DateTime.MinValue)
                         continueFlag = true;
                     break;
                 default:
@@ -269,6 +269,8 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
                         strSelect.AppendFormat("SELECT * FROM [{0}] WHERE [ID] = '{1}';", entityType.Name, val);
                         break;
                     case "CREATETIME":
+                        val = DateTime.MinValue;
+                        break;
                     case "UPDATETIME":
                         val = DateTime.Now;
                         break;
@@ -347,6 +349,10 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
                         strSelect.AppendFormat("SELECT * FROM [{0}] WHERE [ID] = '{1}';", entityType.Name, val);
                     }
                     continue;
+                }
+                if (key == "UPDATETIME")
+                {
+                    val = DateTime.Now;
                 }
                 if (JudgeValue(item.PropertyType.FullName, val))
                     continue;

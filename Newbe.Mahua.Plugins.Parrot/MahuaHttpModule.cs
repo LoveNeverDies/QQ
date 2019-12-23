@@ -2,6 +2,7 @@ using Nancy;
 using Nancy.ModelBinding;
 using Newbe.Mahua.HttpApiClient.Api;
 using Newbe.Mahua.HttpApiClient.Model;
+using Newbe.Mahua.Plugins.Parrot.Entity;
 using Newbe.Mahua.Plugins.Parrot.Helper;
 using Newbe.Mahua.Plugins.Parrot.Model;
 using System;
@@ -22,6 +23,7 @@ namespace Newbe.Mahua.Plugins.Parrot
             //cd 三秒
             if ((DateTime.Now - NowTime).TotalSeconds <= 3)
                 return;
+            QQXXProgram.UserLogoutThread();
             Post["/ReceiveMahuaOutput"] = parameters =>
             {
                 string message = string.Empty;
@@ -113,14 +115,34 @@ namespace Newbe.Mahua.Plugins.Parrot
 
         public string QQXX(long qqid, long qqqid, string msg)
         {
+            string message = string.Empty;
             var qqxxhelper = new QQXXProgram(qqid, qqqid, msg);
-            //如果登录成功
-            if (qqxxhelper.QQXXLogin())
+            if (qqxxhelper.GetQQXXUserState() == QQUSER.State.NOSTATE)
             {
+                var res = qqxxhelper.QQXXLogin();
+                if (res == null)
+                    return message;
+                //如果登录成功 则添加到十分钟就退出的集合里
+                QQXXProgram.logoutList.Add(new Logout
+                {
+                    LoginTime = DateTime.Now,
+                    QQQID = qqqid,
+                    QQID = qqid
+                });
 
+                message = qqxxhelper.GetUserCurrent();
+            }
+            else
+            {
+                switch (msg)
+                {
+                    default:
+                        message = msg;
+                        break;
+                }
             }
 
-            return string.Empty;
+            return message;
         }
 
         /// <summary>
