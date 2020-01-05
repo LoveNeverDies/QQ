@@ -8,7 +8,7 @@
     "**/platforms"
   ],
   "AccessConnectionString": "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=QQHelper.mdb",
-  "SqlServerConnectionString": "Data Source=.;Initial Catalog=QQ;Persist Security Info=True;User ID=sa;Password=miMAshi0.",
+  "SQLServerConnectionString": "Data Source=.;Initial Catalog=QQ;Persist Security Info=True;User ID=sa;Password=miMAshi0.",
   "LogPath": "Log",
   "SQLErrorLogInfo": {
     "SQL_INSERT_WARING": "",

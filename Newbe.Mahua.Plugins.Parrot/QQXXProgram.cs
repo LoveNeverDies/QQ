@@ -4,6 +4,7 @@ using Newbe.Mahua.Plugins.Parrot.Model;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Linq;
 
 namespace Newbe.Mahua.Plugins.Parrot
 {
@@ -14,19 +15,6 @@ namespace Newbe.Mahua.Plugins.Parrot
 
         public static void UserLogoutThread()
         {
-            var currnetProcess = Process.GetCurrentProcess();
-            var allThread = currnetProcess.Threads;
-            var flag = false;
-            foreach (ProcessThread item in allThread)
-            {
-                if (item.Id == ThreadId)
-                {
-                    flag = true;
-                    break;
-                }
-            }
-            if (flag)
-                return;
             Thread t = new Thread(UserLogoutStart);
             t.Start();
             ThreadId = t.ManagedThreadId;
@@ -65,6 +53,10 @@ namespace Newbe.Mahua.Plugins.Parrot
             MSG = message;
         }
 
+        /// <summary>
+        /// 获取用户的状态
+        /// </summary>
+        /// <returns></returns>
         public QQUSER.State GetQQXXUserState()
         {
             QQUSER.State state = QQUSER.State.NOSTATE;

@@ -49,6 +49,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         void ILogHelper.Error(string message, params object[] ps)
         {
             message = string.Format(message, ps);
+            Console.WriteLine(message);
         }
         void ILogHelper.Info(Exception e)
         {
@@ -75,6 +76,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         void ILogHelper.Waring(string message, params object[] ps)
         {
             message = string.Format(message, ps);
+            Console.WriteLine(message);
         }
     }
 }

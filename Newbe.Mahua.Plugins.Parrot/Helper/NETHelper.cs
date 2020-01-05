@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -10,60 +11,6 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
 {
     public static class NETHelper
     {
-
-        //public static readonly string ConnectionString = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=QQHelper.mdb";
-        ///// <summary>
-        ///// 返回第一行第一列 其他行列忽略
-        ///// </summary>
-        ///// <param name="sql"></param>
-        ///// <returns></returns>
-        //public static object ExecuteScalar(this string sql)
-        //{
-        //    using (OleDbConnection conn = new OleDbConnection(ConnectionString))
-        //    {
-        //        using (OleDbCommand cmd = new OleDbCommand(sql, conn))
-        //        {
-        //            conn.Open();
-        //            return cmd.ExecuteScalar();
-        //        }
-        //    }
-        //}
-        ///// <summary>
-        ///// 查
-        ///// </summary>
-        ///// <param name="sql"></param>
-        ///// <returns></returns>
-        //public static DataSet ExecuteDataSet(this string sql)
-        //{
-        //    using (OleDbConnection conn = new OleDbConnection(ConnectionString))
-        //    {
-        //        using (OleDbCommand cmd = new OleDbCommand(sql, conn))
-        //        {
-        //            DataSet dataSet = new DataSet();
-        //            OleDbDataAdapter da = new OleDbDataAdapter(cmd);
-        //            da.Fill(dataSet);
-        //            return dataSet;
-        //        }
-        //    }
-        //}
-
-        ///// <summary>
-        ///// 增删改
-        ///// </summary>
-        ///// <param name="sql"></param>
-        ///// <returns></returns>
-        //public static int ExecuteNonQuery(this string sql)
-        //{
-        //    using (OleDbConnection conn = new OleDbConnection(ConnectionString))
-        //    {
-        //        using (OleDbCommand cmd = new OleDbCommand(sql, conn))
-        //        {
-        //            conn.Open();
-        //            return cmd.ExecuteNonQuery();
-        //        }
-        //    }
-        //}
-
         public class ItemClass
         {
             public int ID { get; set; }
@@ -429,8 +376,6 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         {
             return Enum.Format(enumType, value, "d");
         }
-
-
 
         public static StringBuilder AppendLine(this StringBuilder stringBuilder, string text, params object[] paramsObject)
         {

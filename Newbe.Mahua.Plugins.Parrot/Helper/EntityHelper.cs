@@ -13,15 +13,15 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
     public static class EntityHelper
     {
         //static ISqlServerTableHelper sqlServerTableHelper = new SqlServerTableHelper();
-        static ISqlServerTableHelper sqlServerTableHelper = new SqlServerTableHelper();
+        static ISQLServerTableHelper sqlServerTableHelper = new SQLServerTableHelper();
         static ILogHelper logHelper = new LogHelper();
         static IJsonHelper jsonHelper = new JsonHelper();
 
         #region Lambda表达式转换为SQL WHERE 条件
-        public class ToSqlFormat : Attribute
+        public class ToSQLFormat : Attribute
         {
             public string Format { get; set; }
-            public ToSqlFormat(string str)
+            public ToSQLFormat(string str)
             {
                 Format = str;
             }
@@ -33,7 +33,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        static string GetSqlFromExpression<T>(Expression<Func<T, bool>> func)
+        static string GetSQLFromExpression<T>(Expression<Func<T, bool>> func)
         {
             if (func != null && func.Body is BinaryExpression be)
             {
@@ -95,8 +95,8 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             }
             else if (exp is MethodCallExpression mce)
             {
-                var attributeData = mce.Method.GetCustomAttributes(typeof(ToSqlFormat), false).First();
-                return string.Format(((ToSqlFormat)attributeData).Format, ExpressionRouter(mce.Arguments[0]), ExpressionRouter(mce.Arguments[1]));
+                var attributeData = mce.Method.GetCustomAttributes(typeof(ToSQLFormat), false).First();
+                return string.Format(((ToSQLFormat)attributeData).Format, ExpressionRouter(mce.Arguments[0]), ExpressionRouter(mce.Arguments[1]));
             }
             else if (exp is ConstantExpression ce)
             {
@@ -161,22 +161,22 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             }
         }
 
-        [ToSqlFormat("{0} IN ({1})")]
+        [ToSQLFormat("{0} IN ({1})")]
         public static bool In<T>(this T obj, T[] array)
         {
             return true;
         }
-        [ToSqlFormat("{0} NOT IN ({1})")]
+        [ToSQLFormat("{0} NOT IN ({1})")]
         public static bool NotIn<T>(this T obj, T[] array)
         {
             return true;
         }
-        [ToSqlFormat("{0} LIKE {1}")]
+        [ToSQLFormat("{0} LIKE {1}")]
         public static bool Like(this string str, string likeStr)
         {
             return true;
         }
-        [ToSqlFormat("{0} NOT LIKE {1}")]
+        [ToSQLFormat("{0} NOT LIKE {1}")]
         public static bool NotLike(this string str, string likeStr)
         {
             return true;
@@ -205,7 +205,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         static IQueryable<T> Query<T>(Expression<Func<T, bool>> expression, bool Top1 = false) where T : IKey<Guid>, new()
         {
             var type = typeof(T);
-            return sqlServerTableHelper.ExecuteDataTable(string.Format("SELECT {0}* FROM {1} WHERE {2}", Top1 ? "TOP 1 " : string.Empty, type.Name, GetSqlFromExpression(expression))).ToListModel<T>(Top1).AsQueryable();
+            return sqlServerTableHelper.ExecuteDataTable(string.Format("SELECT {0}* FROM {1} WHERE {2}", Top1 ? "TOP 1 " : string.Empty, type.Name, GetSQLFromExpression(expression))).ToListModel<T>(Top1).AsQueryable();
         }
 
         static bool JudgeValue(string PropertyTypeName, object val)
@@ -269,7 +269,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
                         strSelect.AppendFormat("SELECT * FROM [{0}] WHERE [ID] = '{1}';", entityType.Name, val);
                         break;
                     case "CREATETIME":
-                        val = DateTime.MinValue;
+                        val = DateTime.Now;
                         break;
                     case "UPDATETIME":
                         val = DateTime.Now;
@@ -508,7 +508,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             return res;
         }
 
-        public static int ExecuteSql(this string sql, params SqlParameter[] parameters)
+        public static int ExecuteSQL(this string sql, params SqlParameter[] parameters)
         {
             int resCount = 0;
             try
@@ -516,7 +516,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
                 resCount = sqlServerTableHelper.ExecuteNonQuery(sql, parameters);
                 if (resCount == 0)
                 {
-                    logHelper.Waring("ExecuteSql方法返回影响行数为0，SQL语句为：{0}", sql);
+                    logHelper.Waring("{1}方法返回影响行数为0，SQL语句为：{0}", sql, nameof(ExecuteSQL));
                 }
             }
             catch (Exception e)
@@ -526,7 +526,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
             return resCount;
         }
 
-        public static IList<T> ExecuteSql<T>(this string sql, params SqlParameter[] parameters) where T : IKey<Guid>, new()
+        public static IList<T> ExecuteSQL<T>(this string sql, params SqlParameter[] parameters) where T : IKey<Guid>, new()
         {
             IList<T> res = default(IList<T>);
             try

@@ -23,20 +23,20 @@ namespace Newbe.Mahua.Plugins.Parrot
             //cd ÈýÃë
             if ((DateTime.Now - NowTime).TotalSeconds <= 3)
                 return;
-            QQXXProgram.UserLogoutThread();
             Post["/ReceiveMahuaOutput"] = parameters =>
             {
                 string message = string.Empty;
                 BodyModel body = this.Bind<BodyModel>();
-                if (body.FromGroup != 767680958)
+                if (body.FromQQ != 1401210070)
                     return message;
-                Func<BodyModel, string> func = StartMahuaHttpModule;
-                func.BeginInvoke(body, new AsyncCallback(p =>
-                {
-                    AsyncResult res = (AsyncResult)p;
-                    var resFunc = (Func<BodyModel, string>)res.AsyncDelegate;
-                    message = resFunc.EndInvoke(p);
-                }), null);
+                //Func<BodyModel, string> func = StartMahuaHttpModule;
+                //func.BeginInvoke(body, new AsyncCallback(p =>
+                //{
+                //    AsyncResult res = (AsyncResult)p;
+                //    var resFunc = (Func<BodyModel, string>)res.AsyncDelegate;
+                //    message = resFunc.EndInvoke(p);
+                //}), null);
+                message = StartMahuaHttpModule(body);
                 return message;
             };
         }
@@ -53,7 +53,7 @@ namespace Newbe.Mahua.Plugins.Parrot
                         body.Msg = "ÄãÒ²ºÃÑ½";
                         break;
                     default:
-                        body.Msg = string.Empty;
+                        body.Msg = body.Msg;
                         break;
                 }
                 if (!string.IsNullOrWhiteSpace(body.Msg))

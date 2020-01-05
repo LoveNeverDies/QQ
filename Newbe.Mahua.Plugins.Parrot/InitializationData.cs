@@ -13,7 +13,7 @@ namespace Newbe.Mahua.Plugins.Parrot
         }
         public void InitializationQQXXLEVEL()
         {
-            generate.StructureSql<QQXXLEVEL>().SubmitSqlServer();
+            generate.StructureSQL<QQXXLEVEL>().SubmitSQLServer();
             #region 添加境界
             int i = 0;
             IList<QQXXLEVEL> list = new List<QQXXLEVEL>();
@@ -214,18 +214,18 @@ namespace Newbe.Mahua.Plugins.Parrot
 六道：天人道、人道、畜S道、阿修罗道（魔）、饿鬼道、地狱道
 龙的修炼期：胚胎期(撒下龙种)、成形期(龙种成形)、潜伏期(潜龙勿用)、静养期(龙眠水底)、蜕变期(龙鳞将蜕)、蠕动期(龙形再变)、爬行期(龙作蛇行)、游水期(龙游于海)、飞腾期(飞龙在天/神道大典)。*/
         }
-        public void InitializationQQXXZM()
+        public void InitializationQQXXMP()
         {
-            //generate.StructureSql<QQXXZM>().SubmitSqlServer();
+            generate.StructureSQL<QQXXMP>().SubmitSQLServer();
             string level = "筑基";
             bool hh = true;
-            QQXXZM xxzm = new QQXXZM();
-            IList<QQXXZM> list = new List<QQXXZM>();
-            #region 筑基期 好宗门
-            xxzm.QQXXZM_NAME = "点苍派";
-            xxzm.QQXXZM_HH = true;
-            xxzm.QQXXZM_LEVEL = level;
-            xxzm.QQXXZM_JS = "这是正规门派";
+            QQXXMP xxzm = new QQXXMP();
+            IList<QQXXMP> list = new List<QQXXMP>();
+            #region 筑基期 好门派
+            xxzm.QQXXMP_NAME = "点苍派";
+            xxzm.QQXXMP_HH = true;
+            xxzm.QQXXMP_LEVEL = level;
+            xxzm.QQXXMP_JS = "这是正规门派";
             list.Add(xxzm);
             #endregion 
             list.Add(xxzm);

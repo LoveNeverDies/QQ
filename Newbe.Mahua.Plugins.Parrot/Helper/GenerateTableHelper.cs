@@ -115,13 +115,13 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
 
     public class GenerateTableHelper
     {
-        ISqlServerTableHelper helper = null;
-        StringBuilder strbuilderCreate = null;
+        ISQLServerTableHelper helper = null;
+        StringBuilder strbuilderSQL = null;
         StringBuilder strbuilderDescribe = null;
         public GenerateTableHelper()
         {
-            helper = new SqlServerTableHelper();
-            strbuilderCreate = new StringBuilder();
+            helper = new SQLServerTableHelper();
+            strbuilderSQL = new StringBuilder();
             strbuilderDescribe = new StringBuilder();
         }
         string GetColumnType(ColumnType type)
@@ -201,7 +201,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
                 }
                 else
                 {
-                    throw new Exception();
+
                 }
             });
             return tableEntities;
@@ -211,7 +211,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         /// 构造sql
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public GenerateTableHelper StructureSql<T>()
+        public GenerateTableHelper StructureSQL<T>()
         {
             var res = GetTable<T>();
             /*
@@ -233,31 +233,47 @@ EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'QQ号', @le
             {
                 tableName = typeof(T).GetCustomAttributesData()[0].NamedArguments[0].TypedValue.Value;
             }
-            catch (Exception e)
+            catch
             {
                 throw new Exception("当前类没有添加Table属性");
             }
-            strbuilderCreate.AppendLine("CREATE TABLE [dbo].[{0}] (", tableName);
+            strbuilderSQL.AppendLine("CREATE TABLE [dbo].[{0}] (", tableName);
             for (int i = 0; i < res.Count; i++)
             {
                 var item = res[i];
-                strbuilderCreate.AppendLine("[{0}] {1} {2} {3}{4}", item.Name, item.Type, item.CanBeNull, item.IsPrimaryKey ? "PRIMARY KEY" : string.Empty, i == res.Count - 1 ? ")" : ",");
+                strbuilderSQL.AppendLine("[{0}] {1} {2} {3}{4}", item.Name, item.Type, item.CanBeNull, item.IsPrimaryKey ? "PRIMARY KEY" : string.Empty, i == res.Count - 1 ? ")" : ",");
                 //不支持开头加GO 在后面加分号吧
                 strbuilderDescribe.AppendLine(@"
                 EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'{0}', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'{1}', @level2type = N'COLUMN', @level2name = N'{2}'{3}", item.Describe, tableName, item.Name, ";");
             }
-            strbuilderCreate.AppendLine(strbuilderDescribe.ToString());
+            strbuilderSQL.AppendLine(strbuilderDescribe.ToString());
             strbuilderDescribe.Clear();
+            return this;
+        }
+
+        /// <summary>
+        /// 删除数据库
+        /// 删除数据库
+        /// </summary>
+        /// <typeparam name="T">表名</typeparam>
+        /// <returns></returns>
+        public GenerateTableHelper DropTableSQL<T>()
+        {
+            var tableName = typeof(T).GetCustomAttributesData()[0].NamedArguments[0].TypedValue.Value;
+            strbuilderSQL.AppendFormat(@"
+            IF Exists(SELECT TOP 1 * FROM sysObjects WHERE Id=OBJECT_ID(N'{0}') AND xtype='U')
+            DROP TABLE [dbo].[{0}]", tableName);
+            SubmitSQLServer();
             return this;
         }
 
         /// <summary>
         /// 然后提交
         /// </summary>
-        public void SubmitSqlServer()
+        public void SubmitSQLServer()
         {
-            helper.ExecuteNonQuery(strbuilderCreate.ToString());
-            strbuilderCreate.Clear();
+            helper.ExecuteNonQuery(strbuilderSQL.ToString());
+            strbuilderSQL.Clear();
             strbuilderDescribe.Clear();
         }
         TableColumnModel GetTableEntity(IList<CustomAttributeNamedArgument> attributeNamedArguments, PropertyInfo property)

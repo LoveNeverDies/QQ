@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 
 namespace Newbe.Mahua.Plugins.Parrot.HelperService
 {
-    public interface ISqlServerTableHelper
+    public interface ISQLServerTableHelper
     {
         /// <summary>
         /// 增删改
@@ -46,18 +46,18 @@ namespace Newbe.Mahua.Plugins.Parrot.HelperService
         /// <returns></returns>
         DataSet ExecuteDataSet(string sql, params SqlParameter[] pms);
     }
-    class SqlServerTableHelper : ISqlServerTableHelper
+    class SQLServerTableHelper : ISQLServerTableHelper
     {
         IJsonHelper jsonHelper = null;
         SqlConnection conn = null;
         SqlCommand cmd = null;
-        public SqlServerTableHelper()
+        public SQLServerTableHelper()
         {
             jsonHelper = new JsonHelper();
         }
-        string ConnectionString { get { return jsonHelper.ReadJsonByString("SqlServerConnectionString"); } }
+        string ConnectionString { get { return jsonHelper.ReadJsonByString("SQLServerConnectionString"); } }
 
-        DataSet ISqlServerTableHelper.ExecuteDataSet(string sql, params SqlParameter[] pms)
+        DataSet ISQLServerTableHelper.ExecuteDataSet(string sql, params SqlParameter[] pms)
         {
             DataSet dataSet = new DataSet();
             using (conn = new SqlConnection(ConnectionString))
@@ -77,7 +77,7 @@ namespace Newbe.Mahua.Plugins.Parrot.HelperService
             return dataSet;
         }
 
-        DataTable ISqlServerTableHelper.ExecuteDataTable(string sql, params SqlParameter[] pms)
+        DataTable ISQLServerTableHelper.ExecuteDataTable(string sql, params SqlParameter[] pms)
         {
             DataTable dt = new DataTable();
             using (SqlDataAdapter adapter = new SqlDataAdapter(sql, ConnectionString))
@@ -91,7 +91,7 @@ namespace Newbe.Mahua.Plugins.Parrot.HelperService
             return dt;
         }
 
-        int ISqlServerTableHelper.ExecuteNonQuery(string sql, params SqlParameter[] pms)
+        int ISQLServerTableHelper.ExecuteNonQuery(string sql, params SqlParameter[] pms)
         {
             using (conn = new SqlConnection(ConnectionString))
             {
@@ -107,7 +107,7 @@ namespace Newbe.Mahua.Plugins.Parrot.HelperService
             }
         }
 
-        IDataReader ISqlServerTableHelper.ExecuteReader(string sql, params SqlParameter[] pms)
+        IDataReader ISQLServerTableHelper.ExecuteReader(string sql, params SqlParameter[] pms)
         {
             using (conn = new SqlConnection(ConnectionString))
             {
@@ -123,7 +123,7 @@ namespace Newbe.Mahua.Plugins.Parrot.HelperService
             }
         }
 
-        object ISqlServerTableHelper.ExecuteScalar(string sql, params SqlParameter[] pms)
+        object ISQLServerTableHelper.ExecuteScalar(string sql, params SqlParameter[] pms)
         {
             using (conn = new SqlConnection(ConnectionString))
             {
