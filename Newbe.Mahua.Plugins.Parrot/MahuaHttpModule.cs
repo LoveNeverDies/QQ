@@ -72,7 +72,7 @@ namespace Newbe.Mahua.Plugins.Parrot
                 if (!string.IsNullOrWhiteSpace(body.Message))
                     cqpApi.Apiv1CqpCQSendGroupMsg(new CqpCQSendGroupMsgHttpInput
                     {
-                        Msg = body.Message,
+                        Msg = string.Format("[CQ:at,qq={1}]{0}", body.Message, body.FromQQ),
                         ÈººÅ = body.FromGroup
                     });
                 message = "ok";
