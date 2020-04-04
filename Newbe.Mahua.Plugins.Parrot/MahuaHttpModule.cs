@@ -1,3 +1,4 @@
+using Less.Html;
 using Nancy;
 using Nancy.ModelBinding;
 using Newbe.Mahua.HttpApiClient.Api;
@@ -8,6 +9,7 @@ using Newbe.Mahua.Plugins.Parrot.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
@@ -20,6 +22,7 @@ namespace Newbe.Mahua.Plugins.Parrot
         CqpApi cqpApi = new CqpApi("http://127.0.0.1:36524");
         public MahuaHttpModule() : base("/api")
         {
+            MRJB();
             //cd 三秒
             if ((DateTime.Now - NowTime).TotalSeconds <= 3)
                 return;
@@ -57,25 +60,28 @@ namespace Newbe.Mahua.Plugins.Parrot
                         break;
                 }
                 if (!string.IsNullOrWhiteSpace(body.Msg))
+                {
                     cqpApi.Apiv1CqpCQSendPrivateMsg(new CqpCQSendPrivateMsgHttpInput
                     {
                         Msg = body.Msg,
                         Qqid = body.FromQQ
-                    }
-                    );
-                message = "ok";
+                    });
+                    message = "ok";
+                }
             }
             //群消息
             else if (body != null && body.TypeCode == "ProcessGroupMessage" && body.Platform == 0)
             {
                 body.Message = StartProcessing(body.FromQQ, body.FromGroup, body.Message.Trim());
                 if (!string.IsNullOrWhiteSpace(body.Message))
+                {
                     cqpApi.Apiv1CqpCQSendGroupMsg(new CqpCQSendGroupMsgHttpInput
                     {
-                        Msg = string.Format("[CQ:at,qq={1}]{0}", body.Message, body.FromQQ),
+                        Msg = string.Format("[CQ:at,qq={0}]{1}", body.FromQQ, body.Message),
                         群号 = body.FromGroup
                     });
-                message = "ok";
+                    message = "ok";
+                }
             }
             return message == string.Empty ? "nothing" : message;
         }
@@ -111,6 +117,25 @@ namespace Newbe.Mahua.Plugins.Parrot
                 message = string.Empty;
             }
             return message;
+        }
+
+        /// <summary>
+        /// 每日简报
+        /// </summary>
+        /// <returns></returns>
+        public string MRJB()
+        {
+            string baseUrl = "https://weixin.sogou.com";
+            string searchUrl = string.Format("https://weixin.sogou.com/weixin?type=2&s_from=input&query={0}+%E6%AF%8F%E6%97%A5%E7%AE%80%E6%8A%A5+%E5%BC%82%E6%AC%A1%E5%85%83%E5%B0%8F%E8%B5%84%E8%AE%AF&ie=utf8&_sug_=n&_sug_type_=&w=01019900&sut=2706&sst0=1579510352592&lkt=1%2C1579510352490%2C1579510352490", DateTime.Now.Date);
+            var pageHtml = HttpGet(searchUrl, string.Empty);
+            searchUrl = "https://mp.weixin.qq.com/s?src=11&timestamp=1579510352&ver=2107&signature=xHSaL3RvFxqnWtPfbSV1sbcVB09nB*SoIFaPPzpB2VfevrHHO8OSJG4FIWTb4Xc17gq8mBhA7m5OQS48Ic0ayGtiOMvU3mV9Qn-TZC-ZZG3sQZNONSFTk7ZPewPTU7-m&new=1";
+
+            var document = HtmlParser.Parse(pageHtml);
+            var bodyUrl = baseUrl + document.getElementById("sogou_vr_11002601_title_0").getAttribute("href");
+            pageHtml = HttpGet(bodyUrl, string.Empty);
+            var bodyHtml = document = HtmlParser.Parse(pageHtml);
+
+            return string.Empty;
         }
 
         public string QQXX(long qqid, long qqqid, string msg)
@@ -262,20 +287,47 @@ namespace Newbe.Mahua.Plugins.Parrot
         {
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Url + (postDataStr == "" ? "" : "?") + postDataStr);
-                request.Method = "GET";
-                request.ContentType = "text/html;charset=UTF-8";
-                request.CookieContainer = new CookieContainer();
+                string html;
+                HttpWebRequest Web_Request = (HttpWebRequest)WebRequest.Create(Url);
+                Web_Request.Timeout = 30000;
+                Web_Request.Accept = "*/*";
+                Web_Request.Method = "GET";
+                Web_Request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0";
+                Web_Request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
+                Web_Request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2");
+                //Web_Request.Credentials = CredentialCache.DefaultCredentials;
 
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                //设置代理属性WebProxy-------------------------------------------------
+                //WebProxy proxy = new WebProxy("111.13.7.120", 80);
+                ////在发起HTTP请求前将proxy赋值给HttpWebRequest的Proxy属性
+                //Web_Request.Proxy = proxy;
 
-                Stream myResponseStream = response.GetResponseStream();
-                StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.Default);
-                string retString = myStreamReader.ReadToEnd();
-                myStreamReader.Close();
-                myResponseStream.Close();
+                HttpWebResponse Web_Response = (HttpWebResponse)Web_Request.GetResponse();
 
-                return retString;
+                if (Web_Response.ContentEncoding.ToLower() == "gzip")       // 如果使用了GZip则先解压
+                {
+                    using (Stream Stream_Receive = Web_Response.GetResponseStream())
+                    {
+                        using (var Zip_Stream = new GZipStream(Stream_Receive, CompressionMode.Decompress))
+                        {
+                            using (StreamReader Stream_Reader = new StreamReader(Zip_Stream, Encoding.UTF8))
+                            {
+                                html = Stream_Reader.ReadToEnd();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    using (Stream Stream_Receive = Web_Response.GetResponseStream())
+                    {
+                        using (StreamReader Stream_Reader = new StreamReader(Stream_Receive, Encoding.Default))
+                        {
+                            html = Stream_Reader.ReadToEnd();
+                        }
+                    }
+                }
+                return html;
             }
             catch (Exception ex)
             {
