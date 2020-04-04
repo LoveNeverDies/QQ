@@ -253,7 +253,6 @@ EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'QQ号', @le
 
         /// <summary>
         /// 删除数据库
-        /// 删除数据库
         /// </summary>
         /// <typeparam name="T">表名</typeparam>
         /// <returns></returns>
@@ -262,7 +261,7 @@ EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'QQ号', @le
             var tableName = typeof(T).GetCustomAttributesData()[0].NamedArguments[0].TypedValue.Value;
             strbuilderSQL.AppendFormat(@"
             IF Exists(SELECT TOP 1 * FROM sysObjects WHERE Id=OBJECT_ID(N'{0}') AND xtype='U')
-            DROP TABLE [dbo].[{0}]", tableName);
+            DROP TABLE [dbo].[{0}];", tableName);
             SubmitSQLServer();
             return this;
         }

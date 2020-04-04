@@ -22,68 +22,56 @@ namespace Newbe.Mahua.Plugins.Parrot
         CqpApi cqpApi = new CqpApi("http://127.0.0.1:36524");
         public MahuaHttpModule() : base("/api")
         {
-            MRJB();
+            //MRJB();
             //cd 三秒
             if ((DateTime.Now - NowTime).TotalSeconds <= 3)
                 return;
+            else
+                NowTime = DateTime.Now;
             Post["/ReceiveMahuaOutput"] = parameters =>
             {
                 string message = string.Empty;
                 BodyModel body = this.Bind<BodyModel>();
                 if (body.FromQQ != 1401210070)
                     return message;
-                //Func<BodyModel, string> func = StartMahuaHttpModule;
-                //func.BeginInvoke(body, new AsyncCallback(p =>
-                //{
-                //    AsyncResult res = (AsyncResult)p;
-                //    var resFunc = (Func<BodyModel, string>)res.AsyncDelegate;
-                //    message = resFunc.EndInvoke(p);
-                //}), null);
-                message = StartMahuaHttpModule(body);
-                return message;
+                //个人消息
+                if (body != null && body.TypeCode == "ProcessPrivateMessage" && body.Platform == 0)
+                {
+                    switch (body.Msg)
+                    {
+                        case "你好":
+                            body.Msg = "你也好呀";
+                            break;
+                        default:
+                            body.Msg = body.Msg;
+                            break;
+                    }
+                    if (!string.IsNullOrWhiteSpace(body.Msg))
+                    {
+                        cqpApi.Apiv1CqpCQSendPrivateMsg(new CqpCQSendPrivateMsgHttpInput
+                        {
+                            Msg = body.Msg,
+                            Qqid = body.FromQQ
+                        });
+                        message = "ok";
+                    }
+                }
+                //群消息
+                else if (body != null && body.TypeCode == "ProcessGroupMessage" && body.Platform == 0)
+                {
+                    body.Message = StartProcessing(body.FromQQ, body.FromGroup, body.Message.Trim());
+                    if (!string.IsNullOrWhiteSpace(body.Message))
+                    {
+                        cqpApi.Apiv1CqpCQSendGroupMsg(new CqpCQSendGroupMsgHttpInput
+                        {
+                            Msg = string.Format("[CQ:at,qq={0}]{1}", body.FromQQ, body.Message),
+                            群号 = body.FromGroup
+                        });
+                        message = "ok";
+                    }
+                }
+                return message == string.Empty ? "nothing" : message;
             };
-        }
-
-        public string StartMahuaHttpModule(BodyModel body)
-        {
-            string message = string.Empty;
-            //个人消息
-            if (body != null && body.TypeCode == "ProcessPrivateMessage" && body.Platform == 0)
-            {
-                switch (body.Msg)
-                {
-                    case "你好":
-                        body.Msg = "你也好呀";
-                        break;
-                    default:
-                        body.Msg = body.Msg;
-                        break;
-                }
-                if (!string.IsNullOrWhiteSpace(body.Msg))
-                {
-                    cqpApi.Apiv1CqpCQSendPrivateMsg(new CqpCQSendPrivateMsgHttpInput
-                    {
-                        Msg = body.Msg,
-                        Qqid = body.FromQQ
-                    });
-                    message = "ok";
-                }
-            }
-            //群消息
-            else if (body != null && body.TypeCode == "ProcessGroupMessage" && body.Platform == 0)
-            {
-                body.Message = StartProcessing(body.FromQQ, body.FromGroup, body.Message.Trim());
-                if (!string.IsNullOrWhiteSpace(body.Message))
-                {
-                    cqpApi.Apiv1CqpCQSendGroupMsg(new CqpCQSendGroupMsgHttpInput
-                    {
-                        Msg = string.Format("[CQ:at,qq={0}]{1}", body.FromQQ, body.Message),
-                        群号 = body.FromGroup
-                    });
-                    message = "ok";
-                }
-            }
-            return message == string.Empty ? "nothing" : message;
         }
 
         /// <summary>
@@ -107,6 +95,10 @@ namespace Newbe.Mahua.Plugins.Parrot
             else if (message == "签到")
             {
                 message = QQQQD(qqid, qqqid);
+            }
+            else if (message == "排名")
+            {
+                message = QQPM(qqid, qqqid);
             }
             else if (message == "修仙")
             {
@@ -233,7 +225,20 @@ namespace Newbe.Mahua.Plugins.Parrot
             byte[] bytes = Encoding.Convert(srcEncoding, dstEncoding, srcBytes);
             return dstEncoding.GetString(bytes);
         }
-
+        /// <summary>
+        /// QQ群排名查询
+        /// </summary>
+        /// <returns></returns>
+        public string QQPM(long qqid, long qqqid)
+        {
+            string message = string.Empty;
+            var res = EntityHelper.SearchSQL<QQUSER>(string.Format("SELECT TOP 10 FROM {0} ORDER BY {1} DESC; ", nameof(QQUSER), nameof(QQUSER.QQUSER_EXPERIENCE)));
+            foreach (var item in res)
+            {
+                //item.QQUSER_QQNAME
+            }
+            return message;
+        }
         /// <summary>
         /// QQ群签到
         /// </summary>
@@ -245,8 +250,9 @@ namespace Newbe.Mahua.Plugins.Parrot
             var user = EntityHelper.Get<QQUSER>(p => p.QQUSER_QQID == qqid && p.QQUSER_QQQID == qqqid);
             Random random = new Random();
             var num = random.Next(1, 100);
-            if (user.ID == Guid.Empty)
+            if (user == null || user.ID == Guid.Empty)
             {
+                user = new QQUSER();
                 //如果不存在
                 user.QQUSER_QQID = qqid;
                 user.QQUSER_QQQID = qqqid;
@@ -257,7 +263,7 @@ namespace Newbe.Mahua.Plugins.Parrot
             {
                 if (DateTime.Now.Day == user.UPDATETIME.Day)
                 {
-                    message = string.Format("@{0} 你今天已经签到过了，请不要重复签到！", qqid);
+                    return message = string.Format(" 你今天已经签到过了，请不要重复签到！当前经验值为：{0}。", user.QQUSER_EXPERIENCE);
                 }
                 else
                 {
@@ -265,23 +271,8 @@ namespace Newbe.Mahua.Plugins.Parrot
                     user.Update();
                 }
             }
-            //}
-            //else
-            //{
-            //    oldNum = Convert.ToInt32(user.QQUSER_EXPERIENCE);
-            //    if (DateTime.Now.Day - user.UPDATETIME.Day <= 0)
-            //    {
-            //        message = $"@{qqid} 你今天已经签到过了，请不要重复签到！";
-            //    }
-            //    else
-            //    {
-            //        AccessTableHelper.ExecuteNonQuery($"UPDATE QQUSER SET EXPERIENCE = {oldNum + num} WHERE QQID = {qqid} AND QQQID = {qqqid}");
-            //    }
-            //}
 
-            //if (string.IsNullOrWhiteSpace(message))
-            //    message = $"@{qqid} 签到成功，当前经验值为：{oldNum}(+{num})={oldNum + num}";
-            return message;
+            return message = string.Format(" 签到成功，获得经验值：{0}，当前经验值为：{1}", num, user.QQUSER_EXPERIENCE);
         }
         public string HttpGet(string Url, string postDataStr)
         {

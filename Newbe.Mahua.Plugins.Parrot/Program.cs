@@ -10,13 +10,13 @@ namespace Newbe.Mahua.Plugins.Parrot
         static void Main(string[] args)
         {
             //new GenerateTableHelper()
-            //    .DropTableSQL<QQUSER>().DropTableSQL<QQXX>()
-            //    .DropTableSQL<QQXXLEVEL>().DropTableSQL<QQXXMP>()
-            //    .StructureSQL<QQUSER>().StructureSQL<QQXX>().SubmitSQLServer();
+            //    .DropTableSQL<QQUSER>()
+            //    .StructureSQL<QQUSER>()
+            //    .SubmitSQLServer();
             //var data = new InitializationData();
             //data.InitializationQQXXLEVEL();
             //data.InitializationQQXXMP();
-            QQXXProgram.UserLogoutThread();
+            //QQXXProgram.UserLogoutThread();
             using (var host = new NancyHost(new Uri("http://localhost:65321")))
             {
                 host.Start();

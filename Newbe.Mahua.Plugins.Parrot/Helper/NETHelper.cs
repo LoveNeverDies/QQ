@@ -259,7 +259,7 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
         /// <param name="dataTable"></param>
         /// <param name="onlyOne">是否只循环一次,取第一条</param>
         /// <returns></returns>
-        public static IList<T> ToListModel<T>(this DataTable dataTable, bool onlyOne = false) where T : new()
+        public static IList<T> ToListModel<T>(this DataTable dataTable) where T : new()
         {
             List<T> list = new List<T>();// 定义集合
             foreach (DataRow dr in dataTable.Rows)
@@ -326,8 +326,6 @@ namespace Newbe.Mahua.Plugins.Parrot.Helper
                     }
                 }
                 list.Add(t);
-                if (onlyOne)
-                    break;
             }
             return list;
         }

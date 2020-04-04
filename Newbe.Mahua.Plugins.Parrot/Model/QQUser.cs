@@ -30,10 +30,22 @@ namespace Newbe.Mahua.Plugins.Parrot.Model
         public long QQUSER_QQID { get; set; }
 
         /// <summary>
+        /// QQ昵称
+        /// </summary>
+        [Column(CanBeNull = false, Describe = "QQ昵称")]
+        public string QQUSER_QQNAME { get; set; }
+
+        /// <summary>
         /// QQ群号
         /// </summary>
         [Column(CanBeNull = false, Describe = "QQ群号")]
         public long QQUSER_QQQID { get; set; }
+
+        /// <summary>
+        /// QQ群昵称
+        /// </summary>
+        [Column(CanBeNull = false, Describe = "QQ群昵称")]
+        public string QQUSER_QQQNAME { get; set; }
 
         /// <summary>
         /// 经验
